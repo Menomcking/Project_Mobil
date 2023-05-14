@@ -1,64 +1,64 @@
 package com.example.project_mobil
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import android.widget.TextView
+import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
-import com.google.android.material.textfield.TextInputEditText
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import java.io.IOException
 
-class RegisterActivity : AppCompatActivity() {
-    var username: TextInputLayout? = null
-    var password: TextInputLayout? = null
-    var repassword: TextInputLayout? = null
-    var email: TextInputLayout? = null
-    var regButton: Button? = null
-    var reButton: Button? = null
+class LoginActivity : AppCompatActivity() {
+    var email: EditText? = null
+    var password: EditText? = null
+    var logButton: Button? = null
     private lateinit var context: Context
-    var url = "http://10.0.2.2:3000/authentication/register"
+    var menuButton: Button? = null
+    var url = "http://10.0.2.2:3000/authentication/log-in"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
-        context = this@RegisterActivity
+        context = this@LoginActivity
+        setContentView(R.layout.activity_login)
         init()
-        regButton!!.setOnClickListener{
-            val usernameText = username!!.editText!!.text.toString()
-            val passwordText = password!!.editText!!.text.toString()
-            val repasswordText = repassword!!.editText!!.text.toString()
-            val emailText = email!!.editText!!.text.toString()
-            val user = Users(usernameText,passwordText,emailText)
+        logButton!!.setOnClickListener{
+            val emailText = email!!.text.toString()
+            val passwordText = password!!.text.toString()
+            val user = Login(emailText,passwordText)
             val jsonConverter = Gson()
-            val task = RequestTask(url, "POST", jsonConverter.toJson(user), context)
+            val task = RequestTask(url,"POST",jsonConverter.toJson(user), context)
             task.execute()
+            val intent = Intent(this, MainMenuActivity::class.java)
+            startActivity(intent)
         }
-        reButton!!.setOnClickListener{
+        menuButton!!.setOnClickListener{
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
+
+
     }
 
+
     fun init() {
-        username = findViewById(R.id.username)
-        password = findViewById(R.id.password)
-        repassword = findViewById(R.id.repassword)
-        email = findViewById(R.id.email)
-        regButton = findViewById(R.id.regButton)
-        reButton = findViewById(R.id.re)
+        email = findViewById(R.id.et_email)
+        password = findViewById(R.id.et_password)
+        logButton = findViewById(R.id.btn_login)
+        menuButton = findViewById(R.id.returnButton)
     }
 
     class RequestTask : AsyncTask<Void?, Void?, Response?> {
         var requestUrl: String
         var requestType: String
         lateinit var requestParams: String
-        private lateinit var context: Context
+        lateinit private var context: Context
 
         constructor(requestUrl: String, requestType: String, requestParams: String, context: Context) {
             this.requestUrl = requestUrl
@@ -91,15 +91,21 @@ class RegisterActivity : AppCompatActivity() {
             val converter = Gson()
             if (response!!.responseCode >= 400) {
                 Log.d("onPostExecuteError:", response.content)
-                Toast.makeText(context,"Sikertelen regisztráció ${response.content}",Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Sikertelen belépés ${response.content}",Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(context,"Sikeres regisztráció",Toast.LENGTH_LONG).show()
-                val intent = Intent(context, LoginActivity::class.java)
-                context.startActivity(intent)
+                Toast.makeText(context,"Sikeres belépés${converter.fromJson(response.content,Token::class.java)}",Toast.LENGTH_LONG).show()
             }
             when (requestType) {
                 "GET" -> {}
-                "POST" -> {}
+                "POST" -> {
+                    val toast = Toast.makeText(context,"${converter.fromJson(response.content,Token::class.java)}",Toast.LENGTH_LONG)
+                    toast.show()
+                    val token = "${converter.fromJson(response.content,Token::class.java)}"
+                    val sharedPreferences = context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+                    var editor = sharedPreferences!!.edit()
+                    editor.putString("token",token)
+                    editor.commit()
+                }
                 "PUT" -> {}
                 "DELETE" -> {}
             }
