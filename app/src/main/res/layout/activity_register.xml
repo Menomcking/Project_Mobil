@@ -17,7 +17,7 @@
       <com.google.android.material.textfield.TextInputEditText
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:hint="Felhasználónév"
+          android:hint="Username"
           android:layout_marginBottom="15sp"
           />
   </com.google.android.material.textfield.TextInputLayout>
@@ -30,7 +30,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="E-mail cím"
+            android:hint="E-mail address"
             android:layout_marginBottom="15sp"
             />
     </com.google.android.material.textfield.TextInputLayout>
@@ -44,7 +44,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Jelszó"
+            android:hint="Password"
             android:inputType="textPassword"
             android:layout_marginBottom="15sp"
             />
@@ -59,7 +59,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Jelszó újra"
+            android:hint="Password again"
             android:inputType="textPassword"
             android:layout_marginBottom="15sp"
             />
@@ -68,11 +68,15 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Regisztráció"
-        android:id="@+id/regButton"/>
+        android:text="Register"
+        android:id="@+id/regButton"
+        android:background="@drawable/bg_button"
+        android:layout_marginBottom="5sp"
+        android:textSize="20sp"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Vissza a főmenübe"
-        android:id="@+id/re"/>
+        android:text="Back to the main menu"
+        android:id="@+id/re"
+        android:background="@drawable/bg_button"/>
 </LinearLayout>

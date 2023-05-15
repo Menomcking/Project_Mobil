@@ -39,7 +39,7 @@ class MainMenuActivity : AppCompatActivity() {
             val view: View = inflater.inflate(R.layout.story_list_items, null, false)
             val actualStory: Stories = storyList!!.get(position)
             val textViewTitle: TextView = view.findViewById(R.id.title)
-            val imageViewPicture: ImageView = view.findViewById(R.id.kep)
+            val imageViewPicture: ImageView = view.findViewById(R.id.pic)
             val textViewDescription: TextView = view.findViewById(R.id.description)
             val textViewRating: TextView = view.findViewById(R.id.rating)
             textViewTitle.setText(actualStory.title)

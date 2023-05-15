@@ -5,6 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 
+/**
+ * Main activity
+ *
+ * @constructor Create empty Main activity
+ */
 class MainActivity : AppCompatActivity() {
     var buttonRegister: Button?=null
     var buttonLogin: Button?=null
@@ -23,6 +28,11 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    /**
+     * Init
+     *
+     */
     fun init(){
         buttonRegister = findViewById(R.id.reg)
         buttonLogin = findViewById(R.id.logi)

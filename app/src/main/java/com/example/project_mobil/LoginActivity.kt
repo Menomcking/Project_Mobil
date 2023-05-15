@@ -16,6 +16,11 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import java.io.IOException
 
+/**
+ * Login activity
+ *
+ * @constructor Create empty Login activity
+ */
 class LoginActivity : AppCompatActivity() {
     var email: EditText? = null
     var password: EditText? = null
@@ -47,6 +52,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * Init
+     *
+     */
     fun init() {
         email = findViewById(R.id.et_email)
         password = findViewById(R.id.et_password)
@@ -54,6 +63,11 @@ class LoginActivity : AppCompatActivity() {
         menuButton = findViewById(R.id.returnButton)
     }
 
+    /**
+     * Request task
+     *
+     * @constructor Create empty Request task
+     */
     class RequestTask : AsyncTask<Void?, Void?, Response?> {
         var requestUrl: String
         var requestType: String

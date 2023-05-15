@@ -8,24 +8,23 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-
         />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Regisztráció"
-        android:textColor="@color/black"
+        android:text="Register"
+        android:background="@drawable/bg_button"
         android:id="@+id/reg"
+        android:layout_marginBottom="5sp"
+        android:textSize="20sp"
     />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bejelentezés"
+        android:text="Login"
+        android:background="@drawable/bg_button"
         android:id="@+id/logi"
+        android:textSize="20sp"
         />
 
 </LinearLayout>
