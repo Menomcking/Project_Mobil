@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.RatingBar
@@ -42,7 +44,7 @@ class ReaderActivity : AppCompatActivity() {
 
         submitBtn!!.setOnClickListener {
             var rating = ratingBar.rating
-            val ratingJson: String = "rating: $jsonConverter.toJson(rating)"
+            val ratingJson: String = "rating: "+jsonConverter.toJson(rating)
             val task1 = RequestTask(url1, "POST", ratingJson, context)
             task1.execute()
             Toast.makeText(
@@ -73,10 +75,10 @@ class ReaderActivity : AppCompatActivity() {
     class RequestTask : AsyncTask<Void?, Void?, Response?> {
         var requestUrl: String
         var requestType: String
-        lateinit var requestParams: String
+        var requestParams: String? = null
         lateinit private var context: Context
-        lateinit var title: TextView
-        lateinit var storyParts: TextView
+        var title: TextView? = null
+        var storyParts: TextView? = null
 
         constructor(
             requestUrl: String,
@@ -100,8 +102,8 @@ class ReaderActivity : AppCompatActivity() {
             try {
                 when (requestType) {
                     "GET" -> response = RequestHandler.get(requestUrl)
-                    "POST" -> response = RequestHandler.post(requestUrl, requestParams)
-                    "PUT" -> response = RequestHandler.put(requestUrl, requestParams)
+                    "POST" -> response = RequestHandler.post(requestUrl, requestParams!!)
+                    "PUT" -> response = RequestHandler.put(requestUrl, requestParams!!)
                     "DELETE" -> response = RequestHandler.delete("$requestUrl/$requestParams")
                 }
             } catch (e: IOException) {
@@ -115,7 +117,7 @@ class ReaderActivity : AppCompatActivity() {
             val converter = Gson()
             when (requestType) {
                 "GET" -> {
-                    if (response != null && response.responseCode == 201) {
+                    if (response != null && response.responseCode == 200) {
                         val responseBody = response.content
                         if (responseBody != null) {
                             try {
@@ -125,13 +127,14 @@ class ReaderActivity : AppCompatActivity() {
                                 val storyPart = story.storyparts
 
                                 // Update the UI with the received title and story parts
-                                (context as Activity).runOnUiThread {
+                                val handler = Handler(Looper.getMainLooper())
+                                handler.post{
                                     // Set the title
-                                    title.text = storyTitle
+                                    title!!.text = storyTitle
 
                                     // Set the story parts
                                     val addstoryParts = storyPart.joinToString("\n\n")
-                                    storyParts.text = addstoryParts
+                                    storyParts!!.text = addstoryParts
                                 }
                             } catch (e: JsonSyntaxException) {
                                 Log.e("RequestTask", "Error parsing JSON: ${e.message}")
@@ -146,34 +149,25 @@ class ReaderActivity : AppCompatActivity() {
                 "POST" -> {
                     if (response != null) {
                         if (response.responseCode == 201) {
-                            Toast.makeText(
-                                context,
-                                "Rating submitted successfully.",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            //Toast.makeText(context,"Rating submitted successfully.",Toast.LENGTH_LONG).show()
                             Log.d("RequestTask", "Rating submitted successfully.")
                         } else {
-                            Toast.makeText(
-                                context,
-                                "Failed to submit rating. Error Code: $response.responseCode",
-                                Toast.LENGTH_LONG
-                            ).show()
+                           // Toast.makeText(context,"Failed to submit rating. Error Code: $response.responseCode",Toast.LENGTH_LONG).show()
                             Log.e(
                                 "RequestTask",
                                 "Failed to submit rating. Error Code: $response.responseCode"
                             )
                         }
                     } else {
-                        Toast.makeText(context, "Failed to submit rating.", Toast.LENGTH_LONG)
-                            .show()
+                        // Toast.makeText(context, "Failed to submit rating.", Toast.LENGTH_LONG) .show()
                         Log.e("RequestTask", "Failed to submit rating. Response is null.")
                     }
-                    val token = "${converter.fromJson(response!!.content, Token::class.java)}"
+                /*    val token = "${converter.fromJson(response!!.content, Token::class.java)}"
                     val sharedPreferences =
                         context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
                     var editor = sharedPreferences!!.edit()
                     editor.putString("token", token)
-                    editor.commit()
+                    editor.commit() */
                 }
             }
         }
