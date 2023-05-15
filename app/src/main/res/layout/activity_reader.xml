@@ -6,7 +6,7 @@
 
     <!--Title-->
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/rTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -17,14 +17,14 @@
 
     <!--Main text-->
     <ScrollView
-        android:layout_below="@id/title"
+        android:layout_below="@id/rTitle"
         android:layout_above="@id/rate"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/storyParts"
+            android:id="@+id/rStoryParts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </ScrollView>
@@ -71,8 +71,9 @@
             android:layout_height="wrap_content"
             android:text="Submit"
             android:textColor="@color/white"
-            android:background="@color/purple_500"
-            android:layout_marginTop="16dp"/>
+            android:background="@drawable/bg_button"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 </RelativeLayout>

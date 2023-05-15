@@ -11,4 +11,4 @@ package com.example.project_mobil
  * @property storyparts
  * @constructor Create empty Story
  */
-class Story(var id: Int, var picture: String, var rating: Int, var title: String, var description: String, var storyparts: List<String>)
+class Story(var id: Int, var picture: String, var rating: Int, var title: String, var description: String, var storyparts: List<Storypart>)

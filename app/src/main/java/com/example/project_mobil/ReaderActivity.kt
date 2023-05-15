@@ -28,8 +28,8 @@ class ReaderActivity : AppCompatActivity() {
     var url1 = "http://10.0.2.2:3000/ratings/create"
     var url2 = "http://10.0.2.2:3000/story/"
     lateinit var ratingBar: RatingBar
-    var title: TextView? = null
-    var storyParts: TextView? = null
+    lateinit var title: TextView
+    lateinit var storyParts: TextView
     var submitBtn: Button? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +39,10 @@ class ReaderActivity : AppCompatActivity() {
         var intent: Intent = getIntent()
         var id = intent.getIntExtra("storyId", 0)
         val jsonConverter = Gson()
-        val task2 = RequestTask(url2 + id, "GET")
+        val task2 = RequestTask(url2 + id, "GET","",context,title,storyParts)
         task2.execute()
 
-        submitBtn!!.setOnClickListener {
+      /*  submitBtn!!.setOnClickListener {
             var rating = ratingBar.rating
             val ratingJson: String = "rating: "+jsonConverter.toJson(rating)
             val task1 = RequestTask(url1, "POST", ratingJson, context)
@@ -52,7 +52,7 @@ class ReaderActivity : AppCompatActivity() {
                 "The rating of " + rating + " has been submitted.",
                 Toast.LENGTH_LONG
             ).show()
-        }
+        }*/
 
     }
 
@@ -60,10 +60,10 @@ class ReaderActivity : AppCompatActivity() {
      * Init
      *
      */
-    fun init() {
+    fun init(){
         ratingBar = findViewById(R.id.ratingBar)
-        title = findViewById(R.id.title)
-        storyParts = findViewById(R.id.storyParts)
+        title = findViewById(R.id.rTitle)
+        storyParts = findViewById(R.id.rStoryParts)
         submitBtn = findViewById(R.id.submitBtn)
     }
 
@@ -77,24 +77,22 @@ class ReaderActivity : AppCompatActivity() {
         var requestType: String
         var requestParams: String? = null
         lateinit private var context: Context
-        var title: TextView? = null
-        var storyParts: TextView? = null
-
+        lateinit var title: TextView
+        lateinit var storyParts: TextView
         constructor(
             requestUrl: String,
             requestType: String,
             requestParams: String,
-            context: Context
+            context: Context,
+            title: TextView,
+            storyParts: TextView,
         ) {
             this.requestUrl = requestUrl
             this.requestType = requestType
             this.requestParams = requestParams
             this.context = context
-        }
-
-        constructor(requestUrl: String, requestType: String) {
-            this.requestUrl = requestUrl
-            this.requestType = requestType
+            this.title = title
+            this.storyParts = storyParts
         }
 
         override fun doInBackground(vararg p0: Void?): Response? {
@@ -121,21 +119,20 @@ class ReaderActivity : AppCompatActivity() {
                         val responseBody = response.content
                         if (responseBody != null) {
                             try {
-                                val story =
-                                    Gson().fromJson(responseBody.toString(), Story::class.java)
+                                val story = Gson().fromJson(responseBody.toString(), Story::class.java)
                                 val storyTitle = story.title
                                 val storyPart = story.storyparts
-
-                                // Update the UI with the received title and story parts
-                                val handler = Handler(Looper.getMainLooper())
-                                handler.post{
                                     // Set the title
-                                    title!!.text = storyTitle
+                                    title.text = storyTitle
 
                                     // Set the story parts
-                                    val addstoryParts = storyPart.joinToString("\n\n")
-                                    storyParts!!.text = addstoryParts
-                                }
+                                    var sb = java.lang.StringBuilder()
+                                    for(i in storyPart){
+                                        sb.append(i.textPart)
+                                        sb.append("\n\n")
+                                    }
+                                    storyParts.text = sb.toString()
+
                             } catch (e: JsonSyntaxException) {
                                 Log.e("RequestTask", "Error parsing JSON: ${e.message}")
                             }
